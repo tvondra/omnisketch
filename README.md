@@ -123,6 +123,9 @@ extension doesn't do that - at least not yet. Instead, it caps the
 sample size to 1024, and that's it. But a memory budget is doable, and
 it should also enforce the maximum 1GB allocation size.
 
+* The paper also describes how to support range queries by building
+sketches on dyadic ranges. That's not implemented yet.
+
 
 ## License
 
