@@ -15,7 +15,9 @@
 #include "postgres.h"
 #include "catalog/pg_type.h"
 #include "common/hashfn.h"
+#if (PG_VERSION_NUM >= 150000)
 #include "common/pg_prng.h"
+#endif
 #include "funcapi.h"
 #include "miscadmin.h"
 #include "utils/builtins.h"
@@ -251,7 +253,11 @@ omnisketch_allocate(int nsketches, int width, int height, int sampleSize, int it
 	sketch->sampleSize = sampleSize;
 	sketch->itemSize = itemSize;
 
+#if (PG_VERSION_NUM >= 150000)
 	sketch->seed = pg_prng_uint32(&pg_global_prng_state);
+#else
+	sketch->seed = random();
+#endif
 
 	AssertCheckSketch(sketch);
 
