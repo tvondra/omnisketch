@@ -26,7 +26,7 @@ INSERT INTO data SELECT i, mod(i,100), mod(i,100)
   FROM generate_series(1,1000000) s(i);
 
 CREATE TABLE sketches AS
-SELECT mod(id,10) AS p, omnisketch(0.01, 0.01, id, (a, b)) AS s
+SELECT mod(id,10) AS p, omnisketch(0.01, 0.01, (a, b)) AS s
   FROM data GROUP BY mod(id,10);
 
 SELECT omnisketch_estimate(omnisketch(s), (9, 10)) FROM sketches;
@@ -37,10 +37,10 @@ SELECT omnisketch_estimate(omnisketch(s), (10, 10)) FROM sketches;
 
 ## Functions
 
-### `omnisketch(epsilon, delta, id, record)`
+### `omnisketch(epsilon, delta, record)`
 
 Calculate a sketch for values in the record, each record identified by ID
-(which is expected to be unique). The `epsilon` and `delta` parameters
+(which generated automatically). The `epsilon` and `delta` parameters
 specify desired accuracy of the estimates (see the paper for meaning).
 The lower the values, the more accurate (and larger) the sketch is going
 to be.
@@ -48,14 +48,13 @@ to be.
 #### Synopsis
 
 ```
-SELECT omnisketch(0.01, 0.01, id, (a, b)) FROM data
+SELECT omnisketch(0.01, 0.01, (a, b)) FROM data
 ```
 
 #### Parameters
 
 - `epsilon` - accuracy (relative to total records added), range `[0,1]`
 - `delta` - accuracy, range `[0,1]`
-- `id` - unique ID of the record
 - `record` - values to add to the sketch
 
 
@@ -112,11 +111,12 @@ This is an early experimental extension. Not only does it likely have
 various issues, it may also change in unexpected and incompatible ways.
 Don't use it for anything serious.
 
-* It's unclear if it needs to protect against duplicate IDs. Right now it
-may fail in strange ways (e.g. with asserts it may crash due to `ABORT`)
-or produce invalid results. It might be possible to ignore duplicates,
-but that's likely a sign of user error, in which case it might be better
-to error out.
+* The IDs are generated automatically by combining a (random) per-sketch
+seed, with the sequence for each value added to the sketch. This allows
+combining sketches (using just the sequence would cause duplicates,
+e.g. with parallel queries). There's still some more work needed to deal
+with duplicates (even if very unlikely). It can still happen, in which
+case it can cause `ABORT` in assert, or affect estimates.
 
 * The paper suggests to size the samples based on memory budget, but the
 extension doesn't do that - at least not yet. Instead, it caps the
