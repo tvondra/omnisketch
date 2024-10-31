@@ -15,6 +15,7 @@
 #include "postgres.h"
 #include "catalog/pg_type.h"
 #include "common/hashfn.h"
+#include "common/pg_prng.h"
 #include "funcapi.h"
 #include "miscadmin.h"
 #include "utils/builtins.h"
@@ -33,6 +34,7 @@ typedef struct omnisketch_t
 	int16		sampleSize;		/* sample size for each bucket */
 	int16		itemSize;		/* item size (for the sample) */
 	int32		count;			/* number of entries added */
+	uint32		seed;			/* used for generating "unique" items */
 
 	/* followed by data (counts/samples) for each sketch */
 } omnisketch_t;
@@ -249,6 +251,8 @@ omnisketch_allocate(int nsketches, int width, int height, int sampleSize, int it
 	sketch->sampleSize = sampleSize;
 	sketch->itemSize = itemSize;
 
+	sketch->seed = pg_prng_uint32(&pg_global_prng_state);
+
 	AssertCheckSketch(sketch);
 
 	return sketch;
@@ -337,7 +341,7 @@ omnisketch_sample_add(omnisketch_t *sketch, bucket_t *bucket, int32 *sample, uin
  * Add hash and item to the bucket and the associated sample.
  */
 static void
-omnisketch_add_hash(omnisketch_t *sketch, int column, uint32 hash, int item)
+omnisketch_add_hash(omnisketch_t *sketch, int column, uint32 hash, uint32 item)
 {
 	for (int i = 0; i < sketch->sketchHeight; i++)
 	{
@@ -364,8 +368,8 @@ Datum
 omnisketch_add(PG_FUNCTION_ARGS)
 {
 	omnisketch_t   *sketch = NULL;
-	int32			id = PG_GETARG_INT32(3);
-	HeapTupleHeader	record = PG_GETARG_HEAPTUPLEHEADER(4);
+	uint32			id;
+	HeapTupleHeader	record = PG_GETARG_HEAPTUPLEHEADER(3);
 
 	Oid			tupType;
 	int32		tupTypmod;
@@ -426,6 +430,7 @@ omnisketch_add(PG_FUNCTION_ARGS)
 
 	/* increment the number of records added to the sketch */
 	sketch->count++;
+	id = XXH32(&sketch->count, sizeof(uint32), sketch->seed);
 
 	my_extra = (TypeCacheEntry **) fcinfo->flinfo->fn_extra;
 	if (my_extra == NULL)

@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION omnisketch_combine(omnisketch, omnisketch)
     AS 'omnisketch', 'omnisketch_combine'
     LANGUAGE C IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION omnisketch_add(omnisketch, double precision, double precision, int, record)
+CREATE OR REPLACE FUNCTION omnisketch_add(omnisketch, double precision, double precision, record)
     RETURNS omnisketch
     AS 'omnisketch', 'omnisketch_add'
     LANGUAGE C IMMUTABLE;
@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION omnisketch_finalize(omnisketch)
     AS 'omnisketch', 'omnisketch_finalize'
     LANGUAGE C IMMUTABLE;
 
-CREATE AGGREGATE omnisketch(double precision, double precision, int, record) (
+CREATE AGGREGATE omnisketch(double precision, double precision, record) (
     SFUNC = omnisketch_add,
     STYPE = omnisketch,
     FINALFUNC = omnisketch_finalize,
