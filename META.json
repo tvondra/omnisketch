@@ -1,0 +1,35 @@
+{
+   "name": "omnisketch",
+   "abstract": "A sketch that supports aggregates with filters on multiple attributes.",
+   "description": "A sketch that scales to fast-paced and complex data streams (with many attributes), and supports aggregates with filters on multiple attributes, dynamically chosen at query time. The sketch offers probabilistic guarantees, a favorable space-accuracy tradeoff, and a worst-case logarithmic complexity for updating and for query execution.",
+   "version": "1.0.0",
+   "maintainer": "Tomas Vondra <tomas@vondra.me>",
+   "license": "bsd",
+   "prereqs": {
+      "runtime": {
+         "requires": {
+            "PostgreSQL": "13.0.0"
+         }
+      }
+   },
+   "provides": {
+     "quantile": {
+       "file": "omnisketch--1.0.0.sql",
+       "docfile" : "README.md",
+       "version": "1.0.0"
+     }
+   },
+   "resources": {
+      "repository": {
+        "url":  "https://github.com/tvondra/omnisketch.git",
+        "web":  "http://github.com/tvondra/omnisketch",
+        "type": "git"
+      }
+   },
+   "tags" : ["sketch", "aggregate", "filter"],
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "release_status" : "unstable"
+}
