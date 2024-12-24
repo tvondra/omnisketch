@@ -21,17 +21,22 @@ The OmniSketch data structure was introduced by this paper:
 Precalculate a sketch from data, use it to estimate counts for predicates
 
 ```
+-- Create a table with columns "a" and "b", with 100 distinct values, and
+-- both columns correlated (a=b).
 CREATE TABLE data (id INT, a INT, b INT);
 
 INSERT INTO data SELECT i, mod(i,100), mod(i,100)
   FROM generate_series(1,1000000) s(i);
 
+-- Pre-calculate sketches on deterministic partitions of the data set.
 CREATE TABLE sketches AS
 SELECT mod(id,10) AS p, omnisketch(0.01, 0.01, (a, b)) AS s
   FROM data GROUP BY mod(id,10);
 
+-- Use the sketches to estimate condition (a = 9 AND b = 10).
 SELECT omnisketch_estimate(omnisketch(s), (9, 10)) FROM sketches;
 
+-- Use the sketches to estimate condition (a = 10 AND b = 10).
 SELECT omnisketch_estimate(omnisketch(s), (10, 10)) FROM sketches;
 ```
 
