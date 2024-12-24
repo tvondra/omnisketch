@@ -2,7 +2,7 @@
    "name": "omnisketch",
    "abstract": "A sketch that supports aggregates with filters on multiple attributes.",
    "description": "A sketch that scales to fast-paced and complex data streams (with many attributes), and supports aggregates with filters on multiple attributes, dynamically chosen at query time. The sketch offers probabilistic guarantees, a favorable space-accuracy tradeoff, and a worst-case logarithmic complexity for updating and for query execution.",
-   "version": "1.0.1",
+   "version": "1.0.2",
    "maintainer": "Tomas Vondra <tomas@vondra.me>",
    "license": "bsd",
    "prereqs": {
@@ -14,9 +14,9 @@
    },
    "provides": {
      "quantile": {
-       "file": "omnisketch--1.0.0--1.0.1.sql",
+       "file": "omnisketch--1.0.1--1.0.2.sql",
        "docfile" : "README.md",
-       "version": "1.0.1"
+       "version": "1.0.2"
      }
    },
    "resources": {
