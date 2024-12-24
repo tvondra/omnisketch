@@ -1,6 +1,7 @@
 # OmniSketch extension
 
 [![make installcheck](https://github.com/tvondra/omnisketch/actions/workflows/ci.yml/badge.svg)](https://github.com/tvondra/omnisketch/actions/workflows/ci.yml)
+[![PGXN version](https://badge.fury.io/pg/omnisketch.svg)](https://badge.fury.io/pg/omnisketch)
 
 This PostgreSQL extension implements OmniSketch, a data structure for on-line
 aggregation of data into approximate sketch, and answering queries.
