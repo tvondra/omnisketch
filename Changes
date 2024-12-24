@@ -1,0 +1,7 @@
+Revision history for PostgreSQL extension omnisketch.
+
+1.0.1
+      - Fix release automation.
+
+1.0.0  2024-12-24T18:27:04Z
+      - Initial version.
