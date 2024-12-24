@@ -9,7 +9,7 @@ MODULE_big = omnisketch
 OBJS = omnisketch.o
 
 EXTENSION = omnisketch
-DATA = omnisketch--1.0.0.sql
+DATA = omnisketch--1.0.0.sql omnisketch--1.0.0--1.0.1.sql
 MODULES = omnisketch
 
 CFLAGS=`pg_config --includedir-server`
